@@ -1,0 +1,50 @@
+{
+  "name": "facevault",
+  "version": "0.1.0",
+  "description": "Node.js client for the FaceVault identity verification API — privacy-first KYC with liveness detection, face matching, and document verification.",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsup",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "facevault",
+    "kyc",
+    "identity-verification",
+    "face-matching",
+    "liveness-detection",
+    "document-verification",
+    "webhook",
+    "hmac"
+  ],
+  "author": "FaceVault <hello@facevault.id>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/khreechari/facevault-node"
+  },
+  "homepage": "https://facevault.id",
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.4.0",
+    "vitest": "^3.0.0"
+  }
+}
