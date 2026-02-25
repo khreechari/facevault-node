@@ -1,6 +1,6 @@
 {
   "name": "facevault",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Node.js client for the FaceVault identity verification API — privacy-first KYC with liveness detection, face matching, and document verification.",
   "type": "module",
   "exports": {
