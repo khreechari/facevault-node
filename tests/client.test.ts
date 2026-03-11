@@ -78,6 +78,7 @@ describe("FaceVaultClient", () => {
         session_id: "sid-abc",
         session_token: "tok-xyz",
         steps: ["selfie", "document"],
+        challenge_nonce: "nonce-123",
       }),
     );
 
@@ -95,6 +96,40 @@ describe("FaceVaultClient", () => {
     expect(session.sessionId).toBe("sid-abc");
     expect(session.sessionToken).toBe("tok-xyz");
     expect(session.steps).toEqual(["selfie", "document"]);
+    expect(session.challengeNonce).toBe("nonce-123");
+  });
+
+  it("createSession passes requirePoa option", async () => {
+    fetchSpy.mockResolvedValue(
+      jsonResponse({
+        session_id: "sid-poa",
+        session_token: "tok-poa",
+        steps: ["selfie", "document", "poa"],
+        challenge_nonce: null,
+      }),
+    );
+
+    const client = new FaceVaultClient({ apiKey: API_KEY });
+    await client.createSession("user-1", { requirePoa: true });
+
+    const calledUrl = fetchSpy.mock.calls[0][0] as string;
+    expect(calledUrl).toContain("require_poa=true");
+  });
+
+  it("createSession omits require_poa when not specified", async () => {
+    fetchSpy.mockResolvedValue(
+      jsonResponse({
+        session_id: "sid-1",
+        session_token: "tok-1",
+        steps: [],
+      }),
+    );
+
+    const client = new FaceVaultClient({ apiKey: API_KEY });
+    await client.createSession("user-1");
+
+    const calledUrl = fetchSpy.mock.calls[0][0] as string;
+    expect(calledUrl).not.toContain("require_poa");
   });
 
   it("createSession builds correct webappUrl", async () => {
@@ -179,6 +214,12 @@ describe("FaceVaultClient", () => {
         error: "",
         created_at: "2026-02-22T10:00:00Z",
         completed_at: "2026-02-22T10:05:00Z",
+        trust_score: 85,
+        trust_decision: "accept",
+        require_poa: false,
+        poa: null,
+        anti_spoofing: { score: 0.95, passed: true },
+        credential: { id: "cred-1" },
       }),
     );
 
@@ -192,6 +233,12 @@ describe("FaceVaultClient", () => {
     expect(status.error).toBe("");
     expect(status.createdAt).toBe("2026-02-22T10:00:00Z");
     expect(status.completedAt).toBe("2026-02-22T10:05:00Z");
+    expect(status.trustScore).toBe(85);
+    expect(status.trustDecision).toBe("accept");
+    expect(status.requirePoa).toBe(false);
+    expect(status.poa).toBeNull();
+    expect(status.antiSpoofing).toEqual({ score: 0.95, passed: true });
+    expect(status.credential).toEqual({ id: "cred-1" });
   });
 
   it("getSession defaults missing optional fields", async () => {
@@ -210,6 +257,12 @@ describe("FaceVaultClient", () => {
     expect(status.error).toBe("");
     expect(status.createdAt).toBeNull();
     expect(status.completedAt).toBeNull();
+    expect(status.trustScore).toBeNull();
+    expect(status.trustDecision).toBeNull();
+    expect(status.requirePoa).toBe(false);
+    expect(status.poa).toBeNull();
+    expect(status.antiSpoofing).toBeNull();
+    expect(status.credential).toBeNull();
   });
 
   // --- Error handling ---

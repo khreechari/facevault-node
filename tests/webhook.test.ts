@@ -112,6 +112,10 @@ describe("parseEvent", () => {
     expect(event.status).toBe("completed");
     expect(event.externalUserId).toBeUndefined();
     expect(event.faceMatchPassed).toBeUndefined();
+    expect(event.trustScore).toBeUndefined();
+    expect(event.trustDecision).toBeUndefined();
+    expect(event.sanctionsHit).toBeUndefined();
+    expect(event.poa).toBeUndefined();
   });
 
   it("parses all fields", () => {
@@ -127,6 +131,10 @@ describe("parseEvent", () => {
       confirmed_data: { name: "Alice" },
       completed_at: "2026-02-22T10:00:00Z",
       document_check: { valid: true, type: "passport" },
+      trust_score: 85,
+      trust_decision: "accept",
+      sanctions_hit: false,
+      poa: { status: "verified" },
     });
 
     const event = parseEvent(body);
@@ -140,6 +148,10 @@ describe("parseEvent", () => {
     expect(event.confirmedData).toEqual({ name: "Alice" });
     expect(event.completedAt).toBe("2026-02-22T10:00:00Z");
     expect(event.documentCheck).toEqual({ valid: true, type: "passport" });
+    expect(event.trustScore).toBe(85);
+    expect(event.trustDecision).toBe("accept");
+    expect(event.sanctionsHit).toBe(false);
+    expect(event.poa).toEqual({ status: "verified" });
   });
 
   it("parses Buffer input", () => {

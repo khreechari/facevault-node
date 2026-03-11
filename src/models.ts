@@ -4,6 +4,7 @@ export interface Session {
   sessionToken: string;
   steps: string[];
   webappUrl: string;
+  challengeNonce: string | null;
 }
 
 /** Returned by getSession(). Full session status. */
@@ -15,6 +16,12 @@ export interface SessionStatus {
   error: string;
   createdAt: string | null;
   completedAt: string | null;
+  trustScore: number | null;
+  trustDecision: string | null;
+  requirePoa: boolean;
+  poa: Record<string, unknown> | null;
+  antiSpoofing: Record<string, unknown> | null;
+  credential: Record<string, unknown> | null;
 }
 
 /** Parsed webhook payload. */
@@ -30,4 +37,8 @@ export interface WebhookEvent {
   confirmedData?: Record<string, unknown>;
   completedAt?: string;
   documentCheck?: Record<string, unknown>;
+  trustScore?: number;
+  trustDecision?: string;
+  sanctionsHit?: boolean;
+  poa?: Record<string, unknown>;
 }

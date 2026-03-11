@@ -94,10 +94,14 @@ export class FaceVaultClient {
    * Create a new verification session.
    *
    * @param externalUserId - Your user identifier (e.g. Telegram chat ID).
+   * @param options - Optional settings (e.g. requirePoa).
    * @returns Session with sessionId, sessionToken, and webappUrl.
    */
-  async createSession(externalUserId: string): Promise<Session> {
-    const url = `${this._baseUrl}/api/v1/sessions?external_user_id=${encodeURIComponent(externalUserId)}`;
+  async createSession(externalUserId: string, options?: { requirePoa?: boolean }): Promise<Session> {
+    let url = `${this._baseUrl}/api/v1/sessions?external_user_id=${encodeURIComponent(externalUserId)}`;
+    if (options?.requirePoa !== undefined) {
+      url += `&require_poa=${options.requirePoa}`;
+    }
     const response = await fetch(url, {
       method: "POST",
       headers: { "X-FaceVault-Api-Key": this._apiKey },
@@ -115,6 +119,7 @@ export class FaceVaultClient {
       sessionToken,
       steps: data.steps ?? [],
       webappUrl: `${this._webappBase}/?sid=${sessionId}&st=${sessionToken}`,
+      challengeNonce: data.challenge_nonce ?? null,
     };
   }
 
@@ -143,6 +148,12 @@ export class FaceVaultClient {
       error: data.error ?? "",
       createdAt: data.created_at ?? null,
       completedAt: data.completed_at ?? null,
+      trustScore: data.trust_score ?? null,
+      trustDecision: data.trust_decision ?? null,
+      requirePoa: data.require_poa ?? false,
+      poa: data.poa ?? null,
+      antiSpoofing: data.anti_spoofing ?? null,
+      credential: data.credential ?? null,
     };
   }
 

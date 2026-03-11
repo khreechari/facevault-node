@@ -88,5 +88,9 @@ export function parseEvent(body: string | Buffer): WebhookEvent {
     confirmedData: data.confirmed_data,
     completedAt: data.completed_at,
     documentCheck: data.document_check,
+    trustScore: data.trust_score,
+    trustDecision: data.trust_decision,
+    sanctionsHit: data.sanctions_hit,
+    poa: data.poa,
   };
 }
