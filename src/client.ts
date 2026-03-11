@@ -46,26 +46,26 @@ function validateApiKey(apiKey: string): void {
  * ```
  */
 export class FaceVaultClient {
-  private readonly _apiKey: string;
-  private readonly _baseUrl: string;
-  private readonly _webappBase: string;
-  private readonly _timeout: number;
+  readonly #apiKey: string;
+  readonly #baseUrl: string;
+  readonly #webappBase: string;
+  readonly #timeout: number;
 
   constructor(options: FaceVaultClientOptions) {
     validateApiKey(options.apiKey);
-    this._apiKey = options.apiKey;
-    this._baseUrl = validateUrl(
+    this.#apiKey = options.apiKey;
+    this.#baseUrl = validateUrl(
       options.baseUrl ?? DEFAULT_BASE_URL,
       "baseUrl",
     );
-    this._webappBase = validateUrl(
+    this.#webappBase = validateUrl(
       options.webappBase ?? DEFAULT_WEBAPP_BASE,
       "webappBase",
     );
-    this._timeout = options.timeout ?? DEFAULT_TIMEOUT;
+    this.#timeout = options.timeout ?? DEFAULT_TIMEOUT;
   }
 
-  private async _raiseForStatus(response: Response): Promise<void> {
+  async #raiseForStatus(response: Response): Promise<void> {
     if (response.ok) return;
 
     let detail = "";
@@ -98,17 +98,17 @@ export class FaceVaultClient {
    * @returns Session with sessionId, sessionToken, and webappUrl.
    */
   async createSession(externalUserId: string, options?: { requirePoa?: boolean }): Promise<Session> {
-    let url = `${this._baseUrl}/api/v1/sessions?external_user_id=${encodeURIComponent(externalUserId)}`;
+    let url = `${this.#baseUrl}/api/v1/sessions?external_user_id=${encodeURIComponent(externalUserId)}`;
     if (options?.requirePoa !== undefined) {
       url += `&require_poa=${options.requirePoa}`;
     }
     const response = await fetch(url, {
       method: "POST",
-      headers: { "X-FaceVault-Api-Key": this._apiKey },
-      signal: AbortSignal.timeout(this._timeout),
+      headers: { "X-FaceVault-Api-Key": this.#apiKey },
+      signal: AbortSignal.timeout(this.#timeout),
     });
 
-    await this._raiseForStatus(response);
+    await this.#raiseForStatus(response);
     const data = await response.json();
 
     const sessionId: string = data.session_id;
@@ -118,7 +118,7 @@ export class FaceVaultClient {
       sessionId,
       sessionToken,
       steps: data.steps ?? [],
-      webappUrl: `${this._webappBase}/?sid=${sessionId}&st=${sessionToken}`,
+      webappUrl: `${this.#webappBase}/?sid=${sessionId}&st=${sessionToken}`,
       challengeNonce: data.challenge_nonce ?? null,
     };
   }
@@ -130,14 +130,14 @@ export class FaceVaultClient {
    * @returns SessionStatus with current state and results.
    */
   async getSession(sessionId: string): Promise<SessionStatus> {
-    const url = `${this._baseUrl}/api/v1/sessions/${encodeURIComponent(sessionId)}`;
+    const url = `${this.#baseUrl}/api/v1/sessions/${encodeURIComponent(sessionId)}`;
     const response = await fetch(url, {
       method: "GET",
-      headers: { "X-FaceVault-Api-Key": this._apiKey },
-      signal: AbortSignal.timeout(this._timeout),
+      headers: { "X-FaceVault-Api-Key": this.#apiKey },
+      signal: AbortSignal.timeout(this.#timeout),
     });
 
-    await this._raiseForStatus(response);
+    await this.#raiseForStatus(response);
     const data = await response.json();
 
     return {
@@ -162,8 +162,13 @@ export class FaceVaultClient {
     // native fetch has no persistent connection to close
   }
 
+  /** Prevent API key leakage via JSON.stringify. */
+  toJSON(): Record<string, unknown> {
+    return { baseUrl: this.#baseUrl, apiKey: "***" };
+  }
+
   /** Custom inspect output that redacts the API key. */
   [Symbol.for("nodejs.util.inspect.custom")](): string {
-    return `FaceVaultClient { baseUrl: ${JSON.stringify(this._baseUrl)}, apiKey: "***" }`;
+    return `FaceVaultClient { baseUrl: ${JSON.stringify(this.#baseUrl)}, apiKey: "***" }`;
   }
 }
