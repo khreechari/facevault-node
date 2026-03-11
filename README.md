@@ -3,7 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/facevault)](https://www.npmjs.com/package/facevault)
 [![Node versions](https://img.shields.io/node/v/facevault)](https://www.npmjs.com/package/facevault)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-41%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-43%20passed-brightgreen)]()
 
 Node.js/TypeScript client for the [FaceVault](https://facevault.id) identity verification API — privacy-first KYC with liveness detection, face matching, and document verification.
 
@@ -32,10 +32,14 @@ const client = new FaceVaultClient({ apiKey: "fv_live_your_api_key" });
 const session = await client.createSession("user-123");
 console.log(session.webappUrl); // Send this URL to your user
 
+// With proof of address required
+const session2 = await client.createSession("user-123", { requirePoa: true });
+
 // Check session status
 const status = await client.getSession(session.sessionId);
-console.log(status.status); // "pending", "completed", "failed"
-console.log(status.faceMatchPassed);
+console.log(status.status);        // "in_progress", "passed", "failed", "review"
+console.log(status.trustScore);     // 0-100 trust score
+console.log(status.trustDecision);  // "accept", "review", "reject"
 ```
 
 ## Webhook verification
@@ -48,9 +52,12 @@ const signature = request.headers["x-signature"];
 
 if (verifySignature(body, signature, "whsec_your_secret")) {
   const event = parseEvent(body);
-  console.log(event.event); // "session.completed"
+  console.log(event.event); // "verification.completed"
   console.log(event.sessionId);
   console.log(event.faceMatchPassed);
+  console.log(event.trustScore);     // 0-100
+  console.log(event.trustDecision);  // "accept", "review", "reject"
+  console.log(event.sanctionsHit);   // true/false
 }
 ```
 
@@ -85,8 +92,17 @@ The SDK enforces security best practices out of the box:
 
 - **HTTPS only** — `http://` URLs are rejected at init to prevent credentials leaking over plaintext
 - **Key validation** — empty or whitespace-only API keys throw `TypeError` immediately
-- **Secret redaction** — custom `inspect` output masks the API key, safe for logging
+- **Secret redaction** — custom `inspect` and `toJSON()` mask the API key, safe for logging
+- **True private fields** — ES2022 `#` private fields make the API key inaccessible at runtime
 - **Timing-safe comparison** — webhook signature verification uses `crypto.timingSafeEqual`
+
+## What's new in 1.0.0
+
+- `requirePoa` option on `createSession()` — per-session proof of address override
+- `trustScore` and `trustDecision` on `SessionStatus` — unified 0-100 trust score
+- `requirePoa`, `poa`, `antiSpoofing`, `credential` on `SessionStatus`
+- `trustScore`, `trustDecision`, `sanctionsHit`, `poa` on `WebhookEvent`
+- `challengeNonce` on `Session` — capture integrity nonce
 
 ## Documentation
 
