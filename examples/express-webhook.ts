@@ -18,7 +18,7 @@ app.post(
   "/webhook",
   express.raw({ type: "application/json" }),
   (req, res) => {
-    const sig = req.headers["x-signature"] as string;
+    const sig = req.headers["x-facevault-signature"] as string;
 
     if (!verifySignature(req.body, sig, process.env.WEBHOOK_SECRET!)) {
       res.status(401).send("Invalid signature");

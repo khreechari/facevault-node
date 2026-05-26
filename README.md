@@ -48,7 +48,7 @@ console.log(status.trustDecision);  // "accept", "review", "reject"
 import { verifySignature, parseEvent } from "facevault";
 
 const body = request.body; // raw string or Buffer
-const signature = request.headers["x-signature"];
+const signature = request.headers["x-facevault-signature"];
 
 if (verifySignature(body, signature, "whsec_your_secret")) {
   const event = parseEvent(body);

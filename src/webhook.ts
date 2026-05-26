@@ -29,7 +29,7 @@ function canonicalize(value: unknown): string {
  *   hmac(secret, json.dumps(payload, separators=(",",":"), sort_keys=True), sha256).hexdigest()
  *
  * @param body - Raw request body (string or Buffer).
- * @param signature - Value of the X-Signature header.
+ * @param signature - Value of the X-FaceVault-Signature header.
  * @param secret - Your webhook secret (from API dashboard).
  * @returns true if the signature is valid.
  */
