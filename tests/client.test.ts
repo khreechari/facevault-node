@@ -390,4 +390,11 @@ describe("FaceVaultClient", () => {
     expect(result).toContain('apiKey: "***"');
     expect(result).not.toContain(API_KEY);
   });
+
+  it("toJSON redacts apiKey (no key leak via JSON.stringify)", () => {
+    const client = new FaceVaultClient({ apiKey: API_KEY });
+    const json = JSON.stringify(client);
+    expect(json).not.toContain(API_KEY);
+    expect(JSON.parse(json).apiKey).toBe("***");
+  });
 });

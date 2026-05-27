@@ -4,7 +4,7 @@
 [![npm version](https://img.shields.io/npm/v/facevault)](https://www.npmjs.com/package/facevault)
 [![Node versions](https://img.shields.io/node/v/facevault)](https://www.npmjs.com/package/facevault)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-43%20passed-brightgreen)]()
+[![Tests](https://img.shields.io/badge/tests-44%20passed-brightgreen)]()
 
 Node.js/TypeScript client for the [FaceVault](https://facevault.id) identity verification API — privacy-first KYC with liveness detection, face matching, and document verification.
 
