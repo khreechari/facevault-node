@@ -2,35 +2,18 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 import type { WebhookEvent } from "./models.js";
 
 /**
- * Recursively sort object keys to match Python's json.dumps(sort_keys=True).
- * Produces compact JSON with no whitespace (like separators=(",",":")).
- */
-function canonicalize(value: unknown): string {
-  if (value === null || typeof value !== "object") {
-    return JSON.stringify(value);
-  }
-  if (Array.isArray(value)) {
-    return "[" + value.map(canonicalize).join(",") + "]";
-  }
-  const keys = Object.keys(value as Record<string, unknown>).sort();
-  const pairs = keys.map(
-    (k) =>
-      JSON.stringify(k) +
-      ":" +
-      canonicalize((value as Record<string, unknown>)[k]),
-  );
-  return "{" + pairs.join(",") + "}";
-}
-
-/**
- * Verify HMAC-SHA256 signature of a webhook payload.
+ * Verify the HMAC-SHA256 signature of a webhook.
  *
- * The server computes:
- *   hmac(secret, json.dumps(payload, separators=(",",":"), sort_keys=True), sha256).hexdigest()
+ * The server signs the exact bytes it sends, so verification HMACs the **raw
+ * request body** as received — do not parse and re-serialize it first.
+ * Re-serializing can change the bytes (e.g. non-ASCII escaping or number
+ * formatting differs across languages) and would reject valid webhooks.
  *
- * @param body - Raw request body (string or Buffer).
+ *   sig = hmac(secret, rawBody, sha256).hexdigest()   // hex; matches X-FaceVault-Signature
+ *
+ * @param body - Raw request body, exactly as received (string or Buffer).
  * @param signature - Value of the X-FaceVault-Signature header.
- * @param secret - Your webhook secret (from API dashboard).
+ * @param secret - Your webhook secret (from the API dashboard).
  * @returns true if the signature is valid.
  */
 export function verifySignature(
@@ -38,31 +21,17 @@ export function verifySignature(
   signature: string,
   secret: string,
 ): boolean {
-  const bodyStr = Buffer.isBuffer(body) ? body.toString("utf-8") : body;
-
-  // Re-serialize to match the server's canonical form (sorted keys, no spaces)
-  let canonical: string;
-  try {
-    const parsed = JSON.parse(bodyStr);
-    canonical = canonicalize(parsed);
-  } catch {
-    return false;
-  }
+  if (typeof signature !== "string" || signature.length === 0) return false;
 
   const expected = createHmac("sha256", secret)
-    .update(canonical)
+    .update(typeof body === "string" ? Buffer.from(body, "utf-8") : body)
     .digest("hex");
 
-  // Constant-time comparison to prevent timing attacks
-  try {
-    return timingSafeEqual(
-      Buffer.from(expected, "utf-8"),
-      Buffer.from(signature, "utf-8"),
-    );
-  } catch {
-    // lengths differ
-    return false;
-  }
+  // Constant-time comparison; bail first if lengths differ (timingSafeEqual throws).
+  const expectedBuf = Buffer.from(expected, "utf-8");
+  const signatureBuf = Buffer.from(signature, "utf-8");
+  if (expectedBuf.length !== signatureBuf.length) return false;
+  return timingSafeEqual(expectedBuf, signatureBuf);
 }
 
 /**

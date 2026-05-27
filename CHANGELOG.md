@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Webhook signature verification now HMACs the raw request body** instead of
+  re-serializing the parsed JSON. The old approach couldn't reproduce the
+  server's exact signed bytes for payloads containing non-ASCII characters
+  (names, addresses) or whole-number floats, so valid webhooks could be
+  rejected with a bad-signature error. Verification is now byte-exact — pass the
+  body exactly as received.
+
 ## [1.0.0] - 2026-03-11
 
 ### Added
