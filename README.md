@@ -111,12 +111,19 @@ The SDK enforces security best practices out of the box:
 - [API reference](https://facevault.id/docs)
 - [Blog: Announcing the Node.js SDK](https://facevault.id/blog/node-sdk)
 
+## Roadmap
+
+The FaceVault platform also offers **reusable identity credentials** ("verify
+once, prove forever" — credential challenge / verify / renew / status). These
+endpoints aren't wrapped by this SDK yet; they're planned for a future release.
+Until then, call them directly via the REST API.
+
 ## Contributing
 
 Pull requests welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for repo layout,
 local dev commands, and PR rules.
 
-## Security
+## Reporting a vulnerability
 
 To report a vulnerability, email **security@facevault.id** — do not open a
 public issue. See [SECURITY.md](SECURITY.md) for scope and response times.
