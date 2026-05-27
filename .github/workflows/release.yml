@@ -6,7 +6,8 @@ on:
       - 'v*'
 
 permissions:
-  contents: write
+  contents: write   # create the GitHub release
+  id-token: write   # npm publish --provenance (OIDC)
 
 jobs:
   release:
@@ -20,6 +21,7 @@ jobs:
         with:
           node-version: '20'
           cache: npm
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install dependencies
         run: npm ci
@@ -27,8 +29,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Test
-        run: npm test
+      - name: Test (with coverage gate)
+        run: npm run test:coverage
 
       - name: Pack
         run: npm pack
@@ -62,3 +64,11 @@ jobs:
             SHA256SUMS.txt
           fail_on_unmatched_files: true
           body_path: release-body.md
+
+      # Publish to npm with build provenance. Runs last so a missing/invalid
+      # token fails only this step — the GitHub release + assets are already up.
+      # Requires repo secret NPM_TOKEN (an npm automation token).
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
