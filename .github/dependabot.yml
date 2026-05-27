@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Keep the SHA-pinned GitHub Actions in CI / release workflows current.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+
+  # Keep SDK dev dependencies (TypeScript, tsup, vitest) up to date.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly

@@ -1,5 +1,6 @@
 # FaceVault Node.js SDK
 
+[![CI](https://github.com/khreechari/facevault-node/actions/workflows/ci.yml/badge.svg)](https://github.com/khreechari/facevault-node/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/facevault)](https://www.npmjs.com/package/facevault)
 [![Node versions](https://img.shields.io/node/v/facevault)](https://www.npmjs.com/package/facevault)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -110,6 +111,20 @@ The SDK enforces security best practices out of the box:
 - [API reference](https://facevault.id/docs)
 - [Blog: Announcing the Node.js SDK](https://facevault.id/blog/node-sdk)
 
+## Contributing
+
+Pull requests welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for repo layout,
+local dev commands, and PR rules.
+
+## Security
+
+To report a vulnerability, email **security@facevault.id** — do not open a
+public issue. See [SECURITY.md](SECURITY.md) for scope and response times.
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for a full history of changes.
+
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © Kaditham Holdings Pte Ltd
