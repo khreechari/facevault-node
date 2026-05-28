@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-05-28
+
 ### Fixed
 
 - **Webhook signature verification now HMACs the raw request body** instead of
@@ -15,6 +17,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (names, addresses) or whole-number floats, so valid webhooks could be
   rejected with a bad-signature error. Verification is now byte-exact — pass the
   body exactly as received.
+
+### Changed
+
+- README and examples now document the webhook header as
+  `X-FaceVault-Signature` (the API has always sent this header; v1.0.0 docs
+  incorrectly showed `X-Signature`).
+
+### Docs
+
+- Roadmap note: credentials API methods are planned for the v2 SDK line
+  (held alongside FacePass/FaceKey).
 
 ## [1.0.0] - 2026-03-11
 
