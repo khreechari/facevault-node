@@ -1,6 +1,6 @@
 {
   "name": "facevault",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Node.js client for the FaceVault identity verification API — privacy-first KYC with liveness detection, face matching, and document verification.",
   "type": "module",
   "exports": {
@@ -33,7 +33,9 @@
     "liveness-detection",
     "document-verification",
     "webhook",
-    "hmac"
+    "hmac",
+    "telegram",
+    "mini-app"
   ],
   "author": "FaceVault <hello@facevault.id>",
   "license": "MIT",

@@ -97,13 +97,20 @@ The SDK enforces security best practices out of the box:
 - **True private fields** — ES2022 `#` private fields make the API key inaccessible at runtime
 - **Timing-safe comparison** — webhook signature verification uses `crypto.timingSafeEqual`
 
-## What's new in 1.0.0
+## What's new in 1.0.1
 
-- `requirePoa` option on `createSession()` — per-session proof of address override
-- `trustScore` and `trustDecision` on `SessionStatus` — unified 0-100 trust score
-- `requirePoa`, `poa`, `antiSpoofing`, `credential` on `SessionStatus`
-- `trustScore`, `trustDecision`, `sanctionsHit`, `poa` on `WebhookEvent`
-- `challengeNonce` on `Session` — capture integrity nonce
+- **Webhook signature verification now HMACs the raw request body** instead
+  of re-serializing the parsed JSON. The old approach couldn't reproduce
+  the server's exact signed bytes for payloads containing non-ASCII
+  characters (names, addresses) or whole-number floats, so valid webhooks
+  could be silently rejected. Verification is now byte-exact — pass the
+  body exactly as received.
+- README + examples now document the webhook header as
+  `X-FaceVault-Signature` (the API has always sent this; v1.0.0 docs
+  incorrectly showed `X-Signature`).
+- Reusable identity credentials (`/credentials/*`) are noted in the
+  Roadmap section — these are planned for the v2 SDK line alongside
+  FacePass / FaceKey, not v1.x.
 
 ## Documentation
 

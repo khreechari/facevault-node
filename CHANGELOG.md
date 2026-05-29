@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-05-29
+
+### Docs
+
+- Fix the misleading "What's new in 1.0.0" heading in the README — it now
+  reflects the v1.0.1 changes (raw-body HMAC fix + `X-FaceVault-Signature`
+  header). The npm project page displays the published tarball's README,
+  so v1.0.1 visitors landed on an out-of-date "what's new" section.
+
+### Changed
+
+- Package keywords: add `telegram` and `mini-app` to surface the SDK to
+  Telegram Mini App / bot developers, the dominant audience.
+
 ## [1.0.1] - 2026-05-28
 
 ### Fixed
