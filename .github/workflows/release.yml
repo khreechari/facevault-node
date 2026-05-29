@@ -15,7 +15,7 @@ jobs:
     steps:
       # All third-party actions are SHA-pinned per supply-chain best practice;
       # the comment records the human-readable version next to each SHA.
-      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5  # v4.3.1
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd  # v6.0.2
 
       # IMPORTANT: do NOT set `registry-url` here. setup-node would generate
       # an .npmrc with `//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}`;
