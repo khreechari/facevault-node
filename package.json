@@ -41,7 +41,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/khreechari/facevault-node"
+    "url": "https://github.com/kaditham-technologies/facevault-node"
   },
   "homepage": "https://facevault.id",
   "devDependencies": {

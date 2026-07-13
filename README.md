@@ -1,6 +1,6 @@
 # FaceVault Node.js SDK
 
-[![CI](https://github.com/khreechari/facevault-node/actions/workflows/ci.yml/badge.svg)](https://github.com/khreechari/facevault-node/actions/workflows/ci.yml)
+[![CI](https://github.com/kaditham-technologies/facevault-node/actions/workflows/ci.yml/badge.svg)](https://github.com/kaditham-technologies/facevault-node/actions/workflows/ci.yml)
 [![npm version](https://img.shields.io/npm/v/facevault)](https://www.npmjs.com/package/facevault)
 [![Node versions](https://img.shields.io/node/v/facevault)](https://www.npmjs.com/package/facevault)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
